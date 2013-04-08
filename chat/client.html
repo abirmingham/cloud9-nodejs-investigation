@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+
+        <script>
+            $(function() {
+                var chat   = $('.chat');
+                var socket = io.connect(document.location.href);
+
+                var appendToChat = function(msg) {
+                    chat.append($('<p>').text(msg));
+                };
+
+                socket.on('message', function(data) {
+                    appendToChat(data.user + ": " + data.message);
+                });
+
+                var nameInput    = $('.name');
+                var messageInput = $('.message');
+
+                $(".sendMessage").on('click', function() {
+                    var message = messageInput.val();
+                    appendToChat('You: ' + message);
+                    socket.emit('message', { user: nameInput.val(), message: message });
+                    messageInput.val('');
+                });
+
+                $('.message').keypress(function (e) {
+                    if (e.which == 13) {
+                        $(".sendMessage").click();
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <label>Your Name</label>
+        <input type="text" class="name"></input>
+
+        <label>Your Message</label>
+        <input type="text" class="message"></input>
+        <button class="sendMessage">Send Message</button>
+
+        <div class="chat"></div>
+    </body>
+</html>
