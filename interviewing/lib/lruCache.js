@@ -1,3 +1,4 @@
+// TODO this is all wrong. This is like... LeastRecentlyInserted or something
 // TODO tests over console asserts
 // TODO stale values?
 // TODO google how these are actually implemented?
