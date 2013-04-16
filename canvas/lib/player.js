@@ -53,7 +53,7 @@ define(['underscore', 'keyboardjs', 'lib/sprite', 'lib/particle'], function(_, K
         canvas.globalCompositeOperation = "lighter";
         for (var i = 0; i < this.particles.length; i++) {
             this.particles[i].draw(canvas);
-            if (this.particles[i].remaining_life <= 0 || this.particles[i].radius <= 0) {
+            if (this.particles[i].isDead()) {
                 this.particles[i] = new Particle(this.x + this.width/2, this.y + this.height/2);
             }
         }

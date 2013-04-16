@@ -34,8 +34,8 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
 
         for (var i = enemies.length - 1; i > 0; i--) {
             enemies[i].update(player);
-            
-            if (enemies[i].isColliding(player)) {
+
+            if (enemies[i].markedForGarbageCollection) {
                 enemies.splice(i, 1);
             }
         }
@@ -46,7 +46,7 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
         player.draw(canvas);
 
         _.each(enemies, function(e) {
-            e.drawAsRectangle(canvas);
+            e.draw(canvas);
         });
     }
     
