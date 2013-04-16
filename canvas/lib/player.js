@@ -1,4 +1,4 @@
-define(['underscore', 'KeyboardJS', 'lib/sprite', 'lib/particle'], function(_, KeyboardJS, Sprite, Particle) {
+define(['underscore', 'keyboardjs', 'lib/sprite', 'lib/particle'], function(_, KeyboardJS, Sprite, Particle) {
     var keys = {};
     
     _.each('a w s d space up down left right'.split(' '), function(letter) {
@@ -17,48 +17,48 @@ define(['underscore', 'KeyboardJS', 'lib/sprite', 'lib/particle'], function(_, K
             this.particles.push(new Particle(x + this.width/2, y + this.width/2));
         }
     };
-    Player.prototype = {
-        update: function() {
-            if (keys['a'] || keys['left']) {
-                this.x -= 3;
-                this.velocity[0] -= 0.15;
+
+    Player.prototype = new Sprite();
+    Player.prototype.update = function() {
+        if (keys['a'] || keys['left']) {
+            this.x -= 3;
+            this.velocity[0] -= 0.15;
+        }
+        if (keys['d'] || keys['right']) {
+            this.x += 3;
+            this.velocity[0] += 0.15;
+        }
+        if (keys['w'] || keys['up']) {
+            this.y -= 3;
+            this.velocity[1] -= 0.15;
+        }
+        if (keys['s'] || keys['down']) {
+            this.y += 3;
+            this.velocity[1] += 0.15;
+        }
+        if (keys['space']) {
+            for (var i = 0; i < 2; i++) {
+                if (this.velocity[i] != 0) this.velocity[i] = this.velocity[i] * 0.8;
             }
-            if (keys['d'] || keys['right']) {
-                this.x += 3;
-                this.velocity[0] += 0.15;
-            }
-            if (keys['w'] || keys['up']) {
-                this.y -= 3;
-                this.velocity[1] -= 0.15;
-            }
-            if (keys['s'] || keys['down']) {
-                this.y += 3;
-                this.velocity[1] += 0.15;
-            }
-            if (keys['space']) {
-                for (var i = 0; i < 2; i++) {
-                    if (this.velocity[i] != 0) this.velocity[i] = this.velocity[i] * 0.8;
-                }
-            }
-            this.x += this.velocity[0];
-            this.y += this.velocity[1];
-            Sprite.clamp.call(this);
-        },
-        draw: function(canvas) {
-            Sprite.draw.call(this);
-            
-            // Draw particles
-            var savedCompositeOp = canvas.globalCompositeOperation;
-            canvas.globalCompositeOperation = "lighter";
-            for (var i = 0; i < this.particles.length; i++) {
-                this.particles[i].draw();
-                if (this.particles[i].remaining_life <= 0 || this.particles[i].radius <= 0) {
-                    this.particles[i] = new Particle(this.x + this.width/2, this.y + this.height/2);
-                }
-            }
-            canvas.globalCompositeOperation = savedCompositeOp;
-        },
+        }
+        this.x += this.velocity[0];
+        this.y += this.velocity[1];
+        this.clamp();
     };
-    Player.prototype.prototype = Sprite;
+    Player.prototype.draw = function(canvas) {
+        this.drawAsRectangle(canvas);
+        
+        // Draw particles
+        var savedCompositeOp = canvas.globalCompositeOperation;
+        canvas.globalCompositeOperation = "lighter";
+        for (var i = 0; i < this.particles.length; i++) {
+            this.particles[i].draw(canvas);
+            if (this.particles[i].remaining_life <= 0 || this.particles[i].radius <= 0) {
+                this.particles[i] = new Particle(this.x + this.width/2, this.y + this.height/2);
+            }
+        }
+        canvas.globalCompositeOperation = savedCompositeOp;
+    };
+
     return Player;
 });

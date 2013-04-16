@@ -3,7 +3,8 @@ define([], function() {
         return Math.min(Math.max(i, min), max);
     };
     
-    return {
+    var Sprite = function() {};
+    Sprite.prototype = {
         clamp: function() {
             if (this.x < 0 || this.x > CANVAS_WIDTH-this.width) {
                 this.velocity[0] = this.velocity[0]*-1;
@@ -14,7 +15,7 @@ define([], function() {
                 this.y = clamp(this.y, 0, CANVAS_HEIGHT-this.height);
             }
         },
-        draw: function(canvas) {
+        drawAsRectangle: function(canvas) {
             canvas.fillStyle = this.color;
             canvas.fillRect(this.x, this.y, this.width, this.height);
         },
@@ -27,4 +28,6 @@ define([], function() {
             );
         },
     };
+
+    return Sprite;
 });

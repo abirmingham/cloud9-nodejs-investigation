@@ -2,7 +2,20 @@
 var CANVAS_WIDTH  = 1024;
 var CANVAS_HEIGHT = 768;
 var FPS           = 60;
-var MAX_ENEMIES   = 500;
+var MAX_ENEMIES   = 10000;
+
+requirejs.config({
+    paths: {
+        jquery:     'http://code.jquery.com/jquery-1.9.1',
+        underscore: 'http://underscorejs.org/underscore',
+        keyboardjs: 'http://raw.github.com/RobertWHurst/KeyboardJS/master/keyboard',
+    },
+    shim: {
+        underscore: {
+            exports: '_',
+        },
+    },
+});
 
 /** Main **/
 require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Player, Enemy) {
@@ -14,7 +27,7 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
 
     var update = function() {
         if (enemies.length < MAX_ENEMIES) {
-            enemies.push(new Enemy(Math.random() * (CANVAS_WIDTH-50)), Math.random() * (CANVAS_HEIGHT-50));
+            enemies.push(new Enemy(Math.random() * (CANVAS_WIDTH-50), Math.random() * (CANVAS_HEIGHT-50)));
         }
     
         player.update();
@@ -33,7 +46,7 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
         player.draw(canvas);
 
         _.each(enemies, function(e) {
-            e.draw(canvas);
+            e.drawAsRectangle(canvas);
         });
     }
     
