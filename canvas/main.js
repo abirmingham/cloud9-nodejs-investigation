@@ -20,7 +20,17 @@ requirejs.config({
 /** Main **/
 require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Player, Enemy) {
     var canvasEl = $("<canvas width='" + CANVAS_WIDTH + "' height='" + CANVAS_HEIGHT + "'></canvas>").css('border', '1px solid black').appendTo('body');
-    var canvas = canvasEl.get(0).getContext('2d');
+    var canvas   = canvasEl.get(0).getContext('2d');
+    
+    var tally    = 0;
+    var tallyEl  = $('<div>')
+        .css('font-size', '20px')
+        .css('font-weight', 'bold')
+        .css('position', 'absolute')
+        .css('left', CANVAS_WIDTH + 20 + 'px')
+        .css('top', '20px')
+        .text('0')
+        .appendTo('body');
     
     var player  = new Player(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
     var enemies = [];
@@ -37,6 +47,7 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
 
             if (enemies[i].markedForGarbageCollection) {
                 enemies.splice(i, 1);
+                tallyEl.text(++tally);
             }
         }
     }
