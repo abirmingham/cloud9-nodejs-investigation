@@ -66,9 +66,10 @@ define(['underscore', 'lib/sprite'], function(_, Sprite) {
     };
     DRAW.ALIVE = Sprite.prototype.drawAsRectangle;
     
-    var DYING_LENGTH = 50;
+    var DYING_LENGTH = 25;
     UPDATE.DYING = function(player) {
-        this.width = Math.min(20, Math.min(Math.random()*80, this.width * (1 + (this.dyingCounter/DYING_LENGTH)*.3)));
+        // width = width + velocity + beginning random multiplier
+        this.width = this.width + Math.pow(2 + Math.random(), 2 - (this.dyingCounter/(DYING_LENGTH)));
         this.dyingCounter++;
         if (this.dyingCounter > DYING_LENGTH) this.markedForGarbageCollection = true;
     };
@@ -76,42 +77,43 @@ define(['underscore', 'lib/sprite'], function(_, Sprite) {
         if (! this.dyingColors) {
             this.dyingColors = _.inject(
                 'r g b'.split(' '),
-                function(memo, i) { memo[i] = Math.round(Math.random()*30); return memo; },
+                function(memo, i) { memo[i] = Math.round(Math.random()*80); return memo; },
                 {}
             );
         }
         
-        var opacity = 1 - (this.dyingCounter/DYING_LENGTH);
-        var dyingGradient = canvas.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.width);
+        var radius = this.width;
+        var opacity = 1 - this.dyingCounter/DYING_LENGTH;
+        var dyingGradient = canvas.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
         var gradStr = "rgba("+this.dyingColors.r+", "+this.dyingColors.g+", "+this.dyingColors.b+", ";
         
         dyingGradient.addColorStop(0,   gradStr + opacity + ")");
-        dyingGradient.addColorStop(0.5, gradStr + opacity + ")");
+        dyingGradient.addColorStop(0.25, gradStr + opacity + ")");
         dyingGradient.addColorStop(1,   gradStr + "0)");
         
-        for (var i = -1; i <= 1; i++) {
+        for (var i = 1; i <= 1; i++) {
             if (i == 0) continue;
-            for (var j = -1; j <= 1; j++) {
+            for (var j = 1; j <= 1; j++) {
                 if (j == 0) continue;
                 canvas.beginPath();
                 canvas.fillStyle = dyingGradient;
-                canvas.arc(this.x + Math.max(1, this.width/2)*i, this.y + Math.max(1, this.width/2)*j, this.width, Math.PI*2, false);
+                canvas.arc(this.x * i, this.y * j, radius, Math.PI*2, false);
                 canvas.fill();
             }
         }
     };
     
     var Enemy = function(x, y) {
-        var size       = 1 + Math.random()*2 | 0;
-        var speed      = 1 + Math.random()*2 | 0;
-        this.color     = "#000";
-        this.x         = x;
-        this.y         = y;
-        this.width     = size;
-        this.height    = size;
-        this.velocity  = [speed * intWithRandSign(1), speed * intWithRandSign(1)];
-        this.state     = 'ALIVE';
-        this.dyingCounter   = 0;
+        var size          = 1 + Math.random()*2 | 0;
+        var speed         = 1 + Math.random()*2 | 0;
+        this.color        = "#000";
+        this.x            = x;
+        this.y            = y;
+        this.width        = size;
+        this.height       = size;
+        this.velocity     = [speed * intWithRandSign(1), speed * intWithRandSign(1)];
+        this.state        = 'ALIVE';
+        this.dyingCounter = 0;
         this.markedForGarbageCollection = false;
     };
 

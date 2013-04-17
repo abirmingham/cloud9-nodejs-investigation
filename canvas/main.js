@@ -25,11 +25,11 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
     var tally    = 0;
     var tallyEl  = $('<div>')
         .css('font-size', '20px')
-        .css('font-weight', 'bold')
+        .css('font-style', 'italic')
         .css('position', 'absolute')
         .css('left', CANVAS_WIDTH + 20 + 'px')
         .css('top', '20px')
-        .text('0')
+        .text('0 kills')
         .appendTo('body');
     
     var player  = new Player(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
@@ -47,7 +47,7 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
 
             if (enemies[i].markedForGarbageCollection) {
                 enemies.splice(i, 1);
-                tallyEl.text(++tally);
+                tallyEl.text(++tally + ' kills');
             }
         }
     }
