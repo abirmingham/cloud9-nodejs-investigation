@@ -22,6 +22,8 @@ require(['jquery', 'underscore', 'lib/player', 'lib/enemy'], function($, _, Play
     var canvasEl = $("<canvas width='" + CANVAS_WIDTH + "' height='" + CANVAS_HEIGHT + "'></canvas>").css('border', '1px solid black').appendTo('body');
     var canvas   = canvasEl.get(0).getContext('2d');
     
+    $('body').append('<br />Move: arrow keys or wasd<br />Brake: spacebar')
+    
     var tally    = 0;
     var tallyEl  = $('<div>')
         .css('font-size', '20px')

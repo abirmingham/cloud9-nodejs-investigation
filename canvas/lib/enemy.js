@@ -66,7 +66,7 @@ define(['underscore', 'lib/sprite'], function(_, Sprite) {
     };
     DRAW.ALIVE = Sprite.prototype.drawAsRectangle;
     
-    var DYING_LENGTH = 25;
+    var DYING_LENGTH = 50;
     UPDATE.DYING = function(player) {
         // width = width + velocity + beginning random multiplier
         this.width = this.width + Math.pow(2 + Math.random(), 2 - (this.dyingCounter/(DYING_LENGTH)));
@@ -74,14 +74,16 @@ define(['underscore', 'lib/sprite'], function(_, Sprite) {
         if (this.dyingCounter > DYING_LENGTH) this.markedForGarbageCollection = true;
     };
     DRAW.DYING = function(canvas) {
+        canvas.save();
+        
         if (! this.dyingColors) {
             this.dyingColors = _.inject(
                 'r g b'.split(' '),
-                function(memo, i) { memo[i] = Math.round(Math.random()*80); return memo; },
+                function(memo, i) { memo[i] = Math.round(Math.random()*120); return memo; },
                 {}
             );
         }
-        
+
         var radius = this.width;
         var opacity = 1 - this.dyingCounter/DYING_LENGTH;
         var dyingGradient = canvas.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
@@ -91,16 +93,12 @@ define(['underscore', 'lib/sprite'], function(_, Sprite) {
         dyingGradient.addColorStop(0.25, gradStr + opacity + ")");
         dyingGradient.addColorStop(1,   gradStr + "0)");
         
-        for (var i = 1; i <= 1; i++) {
-            if (i == 0) continue;
-            for (var j = 1; j <= 1; j++) {
-                if (j == 0) continue;
-                canvas.beginPath();
-                canvas.fillStyle = dyingGradient;
-                canvas.arc(this.x * i, this.y * j, radius, Math.PI*2, false);
-                canvas.fill();
-            }
-        }
+        canvas.globalCompositeOperation = "lighter";
+        canvas.beginPath();
+        canvas.fillStyle = dyingGradient;
+        canvas.arc(this.x, this.y, radius, Math.PI*2, false);
+        canvas.fill();
+        canvas.restore();
     };
     
     var Enemy = function(x, y) {

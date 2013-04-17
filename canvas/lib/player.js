@@ -49,7 +49,7 @@ define(['underscore', 'keyboardjs', 'lib/sprite', 'lib/particle'], function(_, K
         this.drawAsRectangle(canvas);
         
         // Draw particles
-        var savedCompositeOp = canvas.globalCompositeOperation;
+        canvas.save();
         canvas.globalCompositeOperation = "lighter";
         for (var i = 0; i < this.particles.length; i++) {
             this.particles[i].draw(canvas);
@@ -57,7 +57,7 @@ define(['underscore', 'keyboardjs', 'lib/sprite', 'lib/particle'], function(_, K
                 this.particles[i] = new Particle(this.x + this.width/2, this.y + this.height/2);
             }
         }
-        canvas.globalCompositeOperation = savedCompositeOp;
+        canvas.restore();
     };
 
     return Player;
